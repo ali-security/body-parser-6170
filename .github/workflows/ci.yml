@@ -114,7 +114,7 @@ jobs:
           node-version: "18.10"
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
 
     - name: Install Node.js ${{ matrix.node-version }}
       shell: bash -eo pipefail -l {0}
@@ -195,28 +195,3 @@ jobs:
         name: coverage
         path: ./coverage
         retention-days: 1
-
-  coverage:
-    needs: test
-    runs-on: ubuntu-20.04
-    steps:
-    - uses: actions/checkout@v2
-
-    - name: Install lcov
-      shell: bash
-      run: sudo apt-get -y install lcov
-
-    - name: Collect coverage reports
-      uses: actions/download-artifact@v2
-      with:
-        name: coverage
-        path: ./coverage
-
-    - name: Merge coverage reports
-      shell: bash
-      run: find ./coverage -name lcov.info -exec printf '-a %q\n' {} \; | xargs lcov -o ./coverage/lcov.info
-
-    - name: Upload coverage report
-      uses: coverallsapp/github-action@master
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
